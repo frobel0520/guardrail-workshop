@@ -1,0 +1,6 @@
+# Guardrail Workshop — 核心後端相依（刻意保持輕量，30 秒內裝完）
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.9
+jsonschema>=4.23
+python-dotenv>=1.0
