@@ -58,11 +58,11 @@ export const LESSONS: Lesson[] = [
     id: "intro",
     nav: "課程總覽",
     title: "Guardrail Fundamentals",
-    subtitle: "LLM 應用的安全防護層：風險、架構與框架選型。AI/ML Engineer 學習系列 · 第一課。",
+    subtitle: "LLM 應用的安全防護層：風險、架構與框架選型。AI/ML Engineer 學習系列。",
     render: () => (
       <>
         <Pipeline />
-        <BlockTitle>這堂課會給你什麼</BlockTitle>
+        <BlockTitle>Contents</BlockTitle>
         <Grid cols={3}>
           <InfoCard
             icon="book"
@@ -226,7 +226,7 @@ export const LESSONS: Lesson[] = [
       <Grid cols={3}>
         <InfoCard
           title="Guardrails AI"
-          body={<em style={{ color: "var(--teal-dark)", fontStyle: "italic" }}>驗證器派</em>}
+          body={<em style={{ color: "var(--teal-text)", fontStyle: "italic" }}>驗證器派</em>}
           bullets={[
             "用可組合的 Validator 攔截輸入輸出，並強制結構化輸出",
             "Guard + Validator + Hub 生態",
@@ -234,11 +234,11 @@ export const LESSONS: Lesson[] = [
             "支援 Python 與 JavaScript",
             "Pydantic 風格，上手直覺",
           ]}
-          footer={<span style={{ color: "var(--teal-dark)" }}>適合：結構化輸出、通用驗證層</span>}
+          footer={<span style={{ color: "var(--teal-text)" }}>適合：結構化輸出、通用驗證層</span>}
         />
         <InfoCard
           title="NeMo Guardrails"
-          body={<em style={{ color: "var(--steel)", fontStyle: "italic" }}>對話流程控制派</em>}
+          body={<em style={{ color: "var(--steel-text)", fontStyle: "italic" }}>對話流程控制派</em>}
           bullets={[
             "用 Colang DSL 撰寫 rails，宣告主題邊界與對話流程",
             "對話控制最靈活、最細緻",
@@ -246,11 +246,11 @@ export const LESSONS: Lesson[] = [
             "學習曲線較陡，需要維護 rails",
             "NVIDIA 生態，開源免費",
           ]}
-          footer={<span style={{ color: "var(--steel)" }}>適合：Chatbot 的主題與流程管控</span>}
+          footer={<span style={{ color: "var(--steel-text)" }}>適合：Chatbot 的主題與流程管控</span>}
         />
         <InfoCard
           title="OpenAI Guardrails"
-          body={<em style={{ color: "var(--navy)", fontStyle: "italic" }}>開箱即用派</em>}
+          body={<em style={{ color: "var(--navy-text)", fontStyle: "italic" }}>開箱即用派</em>}
           bullets={[
             "直接替換 OpenAI client，每次呼叫自動跑檢查",
             "Drop-in + no-code Wizard 配置",
@@ -258,7 +258,7 @@ export const LESSONS: Lesson[] = [
             "與 Agents SDK 原生整合",
             "綁定 OpenAI 生態是主要限制",
           ]}
-          footer={<span style={{ color: "var(--navy)" }}>適合：OpenAI 系應用快速上防護</span>}
+          footer={<span style={{ color: "var(--navy-text)" }}>適合：OpenAI 系應用快速上防護</span>}
         />
       </Grid>
     ),

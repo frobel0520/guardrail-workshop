@@ -1,7 +1,7 @@
 # Guardrail Workshop
 
 > **Guardrail Fundamentals — LLM 應用的安全防護層：風險、架構與框架選型**
-> AI/ML Engineer 學習系列 · 第一課
+> AI/ML Engineer 學習系列
 
 把投影片變成一個**可以動手玩、也可以 clone 下來改**的教材站：11 頁課程內容、一個即時互動的
 guardrail 實驗場，加上一個真的會跑的 FastAPI 縱深防禦服務。
