@@ -130,7 +130,7 @@ export default function App() {
           </span>
           <span className="brand-title">Guardrail Workshop</span>
         </div>
-        <p className="brand-sub">AI/ML Engineer 學習系列 · 第一課</p>
+        <p className="brand-sub">AI/ML Engineer 學習系列</p>
 
         <div className="nav-group-label">課程</div>
         {LESSONS.map((l, i) => (
