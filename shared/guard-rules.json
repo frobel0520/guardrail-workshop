@@ -182,7 +182,7 @@
       "patterns": [
         { "label": "破壞性 SQL", "regex": "\\b(drop\\s+table|truncate\\s+table|delete\\s+from\\s+\\w+\\s*(;|$)|update\\s+\\w+\\s+set\\b(?![\\s\\S]*\\bwhere\\b))", "flags": "i" },
         { "label": "破壞性 Shell", "regex": "(rm\\s+-rf\\s+/|mkfs|:\\(\\)\\{.*\\};:|shutdown\\s+-)", "flags": "i" },
-        { "label": "外部收件人", "regex": "\"to\"\\s*:\\s*\"[^\"]+@(?!example\\.com|example\\.com)[^\"]+\"", "flags": "i" },
+        { "label": "外部收件人", "regex": "\"to\"\\s*:\\s*\"[^\"]+@(?!example\\.com|corp\\.internal)[^\"]+\"", "flags": "i" },
         { "label": "高額轉帳", "regex": "\"amount\"\\s*:\\s*(\\d{6,}|\\d+\\.\\d+e\\+?\\d+)", "flags": "i" }
       ]
     }
