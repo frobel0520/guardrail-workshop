@@ -6,21 +6,22 @@ import { GuardResultView } from "./ResultView";
 import { PageHeader } from "./ui";
 
 type Mode = "pipeline" | Stage;
+type OutputView = "demo" | "production";
 
 const MODE_LABEL: Record<Mode, string> = {
-  pipeline: "完整 pipeline",
-  input: "只跑 Input Guard",
-  output: "只跑 Output Guard",
-  tool: "只跑 Tool Guard",
+  pipeline: "完整 Pipeline",
+  input: "Input Guard",
+  output: "Output Guard",
+  tool: "Tool Guard",
 };
 
-const DEFAULT_SOURCES = `本款無線耳機提供 5 年有限保固，需於購買後 30 天內完成線上註冊。
-保固不含人為損壞。標準出貨時間為下單後 2 個工作天。`;
+const DEFAULT_SOURCES = "產品保固期為 5 年；退貨需在 30 天內提出申請。延長保固最長可加購 2 年。";
 
 export function Playground({ client }: { client: Client }) {
   const [mode, setMode] = useState<Mode>("pipeline");
+  const [outputView, setOutputView] = useState<OutputView>("demo");
   const [text, setText] = useState(
-    RULES.scenarios.find((s) => s.id === "clean")?.text ?? "",
+    RULES.scenarios.find((scenario) => scenario.id === "clean")?.text ?? "",
   );
   const [sources, setSources] = useState(DEFAULT_SOURCES);
   const [useSources, setUseSources] = useState(false);
@@ -36,16 +37,16 @@ export function Playground({ client }: { client: Client }) {
 
   const activeStage: Stage = mode === "pipeline" ? "input" : mode;
   const scenarios = useMemo(
-    () => RULES.scenarios.filter((s) => (mode === "pipeline" ? s.stage === "input" : s.stage === mode)),
+    () => RULES.scenarios.filter((scenario) => (mode === "pipeline" ? scenario.stage === "input" : scenario.stage === mode)),
     [mode],
   );
 
   function toggle(stage: Stage, id: string) {
-    setEnabled((prev) => {
-      const list = prev[stage];
+    setEnabled((previous) => {
+      const ids = previous[stage];
       return {
-        ...prev,
-        [stage]: list.includes(id) ? list.filter((x) => x !== id) : [...list, id],
+        ...previous,
+        [stage]: ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id],
       };
     });
   }
@@ -59,6 +60,7 @@ export function Playground({ client }: { client: Client }) {
       enabled: enabled[activeStage],
       sources: useSources ? [sources] : [],
     };
+
     try {
       if (mode === "pipeline") {
         setChatResult(await client.chat(text, options));
@@ -66,9 +68,7 @@ export function Playground({ client }: { client: Client }) {
         setGuardResult(await client.guard(mode, text, options));
       }
     } catch (err) {
-      setError(
-        `呼叫失敗：${(err as Error).message}。Live 模式請確認後端有跑起來（uvicorn app.main:app --app-dir backend），或切回 Demo 模式。`,
-      );
+      setError(`執行失敗：${(err as Error).message}。若使用 Live API，請確認 FastAPI 已在 localhost:8000 啟動。`);
     } finally {
       setBusy(false);
     }
@@ -77,50 +77,50 @@ export function Playground({ client }: { client: Client }) {
   return (
     <>
       <PageHeader
-        title="互動實驗場"
-        subtitle="貼一段輸入或輸出，看每一層攔了什麼、用什麼策略處理、花了多少延遲。左側可以逐條開關 validator，觀察防護變薄之後會漏掉什麼。"
+        title="Guardrail Playground"
+        subtitle="執行 Guardrail，檢視模型原始輸出、判定依據，以及真正提供給使用者的最終內容。"
       />
 
       <div className="chips" style={{ marginBottom: 20 }}>
-        {(Object.keys(MODE_LABEL) as Mode[]).map((m) => (
+        {(Object.keys(MODE_LABEL) as Mode[]).map((item) => (
           <button
-            key={m}
-            className={`pill-btn ${mode === m ? "on" : ""}`}
+            key={item}
+            className={`pill-btn ${mode === item ? "on" : ""}`}
             onClick={() => {
-              setMode(m);
+              setMode(item);
               setGuardResult(null);
               setChatResult(null);
             }}
           >
-            {MODE_LABEL[m]}
+            {MODE_LABEL[item]}
           </button>
         ))}
       </div>
 
       <div className="play">
         <div className="panel">
-          <h4>輸入</h4>
+          <h4>輸入內容</h4>
           <textarea
             className="input"
             value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="貼上要檢查的文字⋯"
+            onChange={(event) => setText(event.target.value)}
+            placeholder="輸入要檢查的內容"
           />
           <div className="chips">
-            {scenarios.map((s) => (
-              <button key={s.id} className="chip" onClick={() => setText(s.text)}>
-                {s.label}
+            {scenarios.map((scenario) => (
+              <button key={scenario.id} className="chip" onClick={() => setText(scenario.text)}>
+                {scenario.label}
               </button>
             ))}
           </div>
 
-          {(mode === "output" || mode === "pipeline") && (
+          {(mode === "output" || mode === "pipeline") ? (
             <>
               <label className="toggle-row" style={{ borderBottom: 0 }}>
-                <input type="checkbox" checked={useSources} onChange={(e) => setUseSources(e.target.checked)} />
+                <input type="checkbox" checked={useSources} onChange={(event) => setUseSources(event.target.checked)} />
                 <span>
-                  <strong>提供來源文件</strong>
-                  <div className="toggle-meta">幻覺偵測會拿輸出裡的數值主張跟這份文件對照。</div>
+                  <strong>提供 grounding 來源</strong>
+                  <div className="toggle-meta">用來源資料檢查輸出中的數字與高自信主張。</div>
                 </span>
               </label>
               {useSources ? (
@@ -128,13 +128,13 @@ export function Playground({ client }: { client: Client }) {
                   className="input"
                   style={{ minHeight: 90 }}
                   value={sources}
-                  onChange={(e) => setSources(e.target.value)}
+                  onChange={(event) => setSources(event.target.value)}
                 />
               ) : null}
             </>
-          )}
+          ) : null}
 
-          <h4 style={{ marginTop: 22 }}>啟用的 validator（{activeStage}）</h4>
+          <h4 style={{ marginTop: 22 }}>啟用的 validators（{activeStage}）</h4>
           {validatorsForStage(activeStage).map((spec) => (
             <label className="toggle-row" key={spec.id}>
               <input
@@ -145,7 +145,7 @@ export function Playground({ client }: { client: Client }) {
               <span>
                 <strong>{spec.name}</strong>
                 <div className="toggle-meta">
-                  {spec.description}（on_fail: <code>{spec.on_fail}</code> · {spec.latency_ms} ms）
+                  {spec.description}；on_fail: <code>{spec.on_fail}</code> · {spec.latency_ms} ms
                 </div>
               </span>
             </label>
@@ -153,54 +153,83 @@ export function Playground({ client }: { client: Client }) {
 
           <div style={{ marginTop: 20, display: "flex", gap: 10, alignItems: "center" }}>
             <button className="btn" onClick={run} disabled={busy || !text.trim()}>
-              {busy ? "檢查中⋯" : "跑一次檢查"}
+              {busy ? "檢查中…" : "執行 Guardrail"}
             </button>
             <span className="toggle-meta">
-              目前資料來源：<strong>{client.mode === "live" ? "本機 FastAPI" : "瀏覽器 Demo"}</strong>
+              目前來源：<strong>{client.mode === "live" ? "Live FastAPI" : "本機 Demo"}</strong>
             </span>
           </div>
         </div>
 
         <div className="panel">
-          <h4>結果</h4>
+          <h4>執行結果</h4>
           {error ? <div className="error-box">{error}</div> : null}
 
-          {!guardResult && !chatResult && !error ? (
-            <div className="empty">還沒有結果。左邊挑一個情境，按「跑一次檢查」。</div>
-          ) : null}
+          {!guardResult && !chatResult && !error ? <div className="empty">選擇案例或輸入內容後，執行 Guardrail 查看結果。</div> : null}
 
           {guardResult ? <GuardResultView result={guardResult} /> : null}
 
           {chatResult ? (
             <>
-              <GuardResultView result={chatResult.input_guard} title="① Input Guard" />
-              {chatResult.llm_raw ? (
-                <>
-                  <h4 style={{ margin: "26px 0 12px", fontSize: 15 }}>
-                    ② LLM 原始輸出（provider：{chatResult.llm_provider}）
-                  </h4>
-                  <p className="text-out">{chatResult.llm_raw}</p>
-                </>
-              ) : (
-                <p className="note" style={{ marginTop: 20 }}>
-                  ② LLM 沒有被呼叫——輸入就被擋下來了，token 與延遲都省下來了。
-                </p>
-              )}
-              {chatResult.output_guard ? (
-                <div style={{ marginTop: 26 }}>
-                  <GuardResultView result={chatResult.output_guard} title="③ Output Guard" />
+              <div className="output-view-switch">
+                <div>
+                  <strong>輸出檢視</strong>
+                  <div className="toggle-meta">Demo 會揭露 raw output；Production 只呈現可安全交付的內容。</div>
                 </div>
+                <div className="chips" style={{ margin: 0 }}>
+                  {(["demo", "production"] as OutputView[]).map((item) => (
+                    <button
+                      key={item}
+                      className={`pill-btn ${outputView === item ? "on" : ""}`}
+                      onClick={() => setOutputView(item)}
+                    >
+                      {item === "demo" ? "Demo" : "Production"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <section className="output-stage">
+                <h4>1. Input Guard</h4>
+                <GuardResultView result={chatResult.input_guard} />
+              </section>
+
+              <section className="output-stage">
+                <h4>2. 模型原始回覆（{chatResult.llm_provider}）</h4>
+                {chatResult.llm_raw ? (
+                  outputView === "demo" ? (
+                    <>
+                      <div className="demo-warning">僅供教學檢視：此內容可能含有尚未處理的敏感資訊。</div>
+                      <p className="text-out raw-output">{chatResult.llm_raw}</p>
+                    </>
+                  ) : (
+                    <div className="raw-hidden">Production 模式不顯示未經 Guardrail 處理的模型原始回覆。</div>
+                  )
+                ) : (
+                  <p className="note">Input Guard 已阻擋或要求重新提問，因此沒有呼叫模型。</p>
+                )}
+              </section>
+
+              {chatResult.output_guard ? (
+                <section className="output-stage">
+                  <h4>3. Output Guard 判定</h4>
+                  <GuardResultView result={chatResult.output_guard} revealOriginal={outputView === "demo"} />
+                </section>
               ) : null}
-              <h4 style={{ margin: "26px 0 12px", fontSize: 15 }}>④ 使用者實際看到的回覆</h4>
-              <p className="text-out">{chatResult.reply}</p>
+
+              <section className="output-stage final-output">
+                <h4>{chatResult.output_guard ? "4" : "3"}. 使用者最終看到的內容</h4>
+                <p className="text-out">{chatResult.reply}</p>
+              </section>
+
               <div className="metrics">
                 <div>
                   <b>{chatResult.total_latency_ms} ms</b>
-                  整條 pipeline 實測耗時
+                  Pipeline 總延遲
                 </div>
                 <div>
                   <b>{chatResult.blocked ? "是" : "否"}</b>
-                  是否被攔下
+                  是否被阻擋
                 </div>
               </div>
             </>

@@ -805,6 +805,58 @@ textarea.input:focus,
   color: var(--ink);
 }
 
+.output-view-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #101828;
+  font-size: 13px;
+}
+
+.output-stage {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.output-stage h4 {
+  color: var(--ink);
+  text-transform: none;
+}
+
+.demo-warning,
+.raw-hidden {
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.demo-warning {
+  color: var(--amber-text);
+  background: rgba(240, 180, 60, 0.12);
+  border: 1px solid rgba(240, 180, 60, 0.3);
+}
+
+.raw-hidden {
+  color: var(--muted);
+  background: #101828;
+  border: 1px dashed var(--line);
+}
+
+.raw-output {
+  border-color: rgba(240, 180, 60, 0.4);
+}
+
+.final-output .text-out {
+  border-color: rgba(30, 203, 152, 0.45);
+}
+
 .mark {
   background: rgba(240, 180, 60, 0.25);
   color: #f6d79a;
@@ -948,6 +1000,11 @@ table.events td.excerpt {
   .grid.cols-3,
   .play {
     grid-template-columns: 1fr;
+  }
+
+  .output-view-switch {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .page-title {

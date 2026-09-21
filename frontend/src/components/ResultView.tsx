@@ -14,7 +14,7 @@ const ACTION_LABEL: Record<string, string> = {
   noop: "記錄",
 };
 
-function ValidatorRow({ item }: { item: ValidatorResult }) {
+function ValidatorRow({ item, revealMatches }: { item: ValidatorResult; revealMatches: boolean }) {
   return (
     <div className="result-row">
       <span className={`result-dot ${item.passed ? "ok" : "fail"}`} />
@@ -30,7 +30,12 @@ function ValidatorRow({ item }: { item: ValidatorResult }) {
           <div className="violation">
             {item.violations.slice(0, 6).map((v, i) => (
               <div key={`${v.label}-${i}`}>
-                {v.label}：<code>{v.matched_text.slice(0, 80)}</code>
+                {v.label}
+                {revealMatches ? (
+                  <>
+                    ：<code>{v.matched_text.slice(0, 80)}</code>
+                  </>
+                ) : null}
               </div>
             ))}
             {item.violations.length > 6 ? <div>⋯還有 {item.violations.length - 6} 筆</div> : null}
@@ -42,9 +47,19 @@ function ValidatorRow({ item }: { item: ValidatorResult }) {
   );
 }
 
-export function GuardResultView({ result, title }: { result: GuardResult; title?: string }) {
+export function GuardResultView({
+  result,
+  title,
+  revealOriginal = true,
+}: {
+  result: GuardResult;
+  title?: string;
+  revealOriginal?: boolean;
+}) {
   const info = OUTCOME_TEXT[result.outcome];
   const changed = result.final_text !== result.original_text;
+  // blocked／reask 的內容不會交付給使用者，Production 檢視不能顯示。
+  const withheld = !revealOriginal && (result.outcome === "blocked" || result.outcome === "reask");
 
   return (
     <section>
@@ -54,13 +69,15 @@ export function GuardResultView({ result, title }: { result: GuardResult; title?
         <span style={{ fontWeight: 400, fontSize: 13.5 }}>{info.hint}</span>
       </div>
 
-      {changed ? (
+      {changed && revealOriginal ? (
         <>
           <div className="toggle-meta">處理前</div>
           <p className="text-out">{result.original_text}</p>
           <div className="toggle-meta">處理後（送出去的內容）</div>
           <p className="text-out">{result.final_text || "（整段被攔下，不送出）"}</p>
         </>
+      ) : withheld ? (
+        <div className="raw-hidden">Production 模式不顯示未交付給使用者的內容。</div>
       ) : (
         <p className="text-out">{result.final_text || result.original_text}</p>
       )}
@@ -71,7 +88,9 @@ export function GuardResultView({ result, title }: { result: GuardResult; title?
         {result.results.length === 0 ? (
           <p className="note">這一層沒有啟用任何 validator。</p>
         ) : (
-          result.results.map((item) => <ValidatorRow key={item.validator_id} item={item} />)
+          result.results.map((item) => (
+            <ValidatorRow key={item.validator_id} item={item} revealMatches={revealOriginal} />
+          ))
         )}
       </div>
 
