@@ -142,6 +142,17 @@ div code {
   margin: 0 0 22px 50px;
 }
 
+.atlas-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 50px;
+  color: #b3c0dc;
+  font-size: 12px;
+  text-decoration: none;
+}
+.atlas-link:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
 .nav-group-label {
   font-size: 11px;
   letter-spacing: 1.4px;
