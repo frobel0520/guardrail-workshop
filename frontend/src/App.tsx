@@ -131,6 +131,9 @@ export default function App() {
           <span className="brand-title">Guardrail Workshop</span>
         </div>
         <p className="brand-sub">AI/ML Engineer 學習系列</p>
+        <a className="atlas-link" href="https://frobel0520.github.io/learning-atlas/" aria-label="返回 Learning Atlas 學習總入口">
+          Learning Atlas <span aria-hidden="true">↗</span>
+        </a>
 
         <div className="nav-group-label">課程</div>
         {LESSONS.map((l, i) => (
