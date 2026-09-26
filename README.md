@@ -8,6 +8,8 @@ guardrail 實驗場，加上一個真的會跑的 FastAPI 縱深防禦服務。
 
 🔗 **線上版：** https://frobel0520.github.io/guardrail-workshop/
 
+本站是 [Learning Atlas](https://frobel0520.github.io/learning-atlas/)「AI 安全」路線，站內導覽有返回 Learning Atlas 的連結（2026-09-25 起）。
+
 ---
 
 ## 這個專案在教什麼
@@ -47,6 +49,13 @@ cd frontend && npm install && npm run dev
 ```
 
 打開 http://localhost:5173 ，右上角切成 **Live API**，位址填 `http://localhost:8000`。
+
+### 實驗場的 Demo／Production 檢視
+
+完整 Pipeline 的結果分成四段：Input Guard → 模型原始回覆 → Output Guard 判定 → 使用者最終看到的內容。結果區可以切換兩種檢視（2026-09-21 起）：
+
+- **Demo**：揭露模型原始回覆與處理前的原文，方便教學時看清楚每一層攔了什麼。
+- **Production**：只呈現真正交付給使用者的內容；validator 列表不顯示違規片段原文，被 reask／攔下的結果以提示取代。
 
 ---
 
@@ -130,6 +139,10 @@ cd backend && python -m pytest
 # 前端型別檢查 + 建置
 cd frontend && npm run build
 ```
+
+## 維運
+
+`frontend/index.html` 載入 Harbor 維護腳本（`data-project="guardrail-workshop"`，2026-09-15 起）：Harbor 開啟維護模式時顯示全螢幕維護畫面，有公告時顯示底部公告列；Harbor 連不上或逾時 800 ms 時頁面照常顯示。
 
 ## 授權
 
