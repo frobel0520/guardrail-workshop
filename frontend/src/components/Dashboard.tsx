@@ -74,6 +74,7 @@ export function Dashboard({ client }: { client: Client }) {
   return (
     <>
       <PageHeader
+        kicker="GUARDRAIL / LAB · EVENTS"
         title="攔截事件 Dashboard"
         subtitle="每一次沒通過的檢查都會留下一筆事件。Demo 模式存在瀏覽器 localStorage，Live 模式存在後端 SQLite——這就是投影片 capstone 說的「資料庫記錄攔截事件」。"
       />

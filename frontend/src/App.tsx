@@ -10,7 +10,7 @@ import {
 } from "./api";
 import { Dashboard } from "./components/Dashboard";
 import { Playground } from "./components/Playground";
-import { Icon, PageHeader } from "./components/ui";
+import { PageHeader } from "./components/ui";
 import { LESSONS } from "./content/lessons";
 import { RULES } from "./guard/engine";
 
@@ -54,15 +54,17 @@ function ModeSwitch({
   health: "unknown" | "ok" | "bad";
 }) {
   return (
-    <div className="topbar">
+    <div className="mode-bar">
       <div className="mode-switch">
-        <span style={{ color: "var(--muted)" }}>資料來源</span>
-        <button className={`pill-btn ${mode === "demo" ? "on" : ""}`} onClick={() => setMode("demo")}>
-          Demo（瀏覽器）
-        </button>
-        <button className={`pill-btn ${mode === "live" ? "on" : ""}`} onClick={() => setMode("live")}>
-          Live API（本機後端）
-        </button>
+        <span>資料來源</span>
+        <div className="mode-group">
+          <button className={`pill-btn ${mode === "demo" ? "on" : ""}`} onClick={() => setMode("demo")}>
+            Demo（瀏覽器）
+          </button>
+          <button className={`pill-btn ${mode === "live" ? "on" : ""}`} onClick={() => setMode("live")}>
+            Live API（本機後端）
+          </button>
+        </div>
         {mode === "live" ? (
           <>
             <input
@@ -72,14 +74,14 @@ function ModeSwitch({
               placeholder={DEFAULT_API_URL}
               aria-label="後端位址"
             />
-            <span style={{ color: "var(--muted)" }}>
+            <span>
               <span className={`status-dot ${health === "ok" ? "ok" : health === "bad" ? "bad" : ""}`} />
               {health === "ok" ? "已連線" : health === "bad" ? "連不上" : "檢查中"}
             </span>
           </>
         ) : null}
       </div>
-      <span style={{ color: "var(--muted)" }}>規則版本 v{RULES.version}</span>
+      <span>規則版本 v{RULES.version}</span>
     </div>
   );
 }
@@ -89,6 +91,19 @@ export default function App() {
   const [mode, setModeState] = useState<Mode>(loadMode);
   const [apiUrl, setApiUrlState] = useState<string>(loadApiUrl);
   const [health, setHealth] = useState<"unknown" | "ok" | "bad">("unknown");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [route]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const client = useMemo(() => createClient(mode, apiUrl), [mode, apiUrl]);
 
@@ -120,14 +135,14 @@ export default function App() {
 
   const lessonIndex = LESSONS.findIndex((l) => l.id === route);
   const lesson = lessonIndex >= 0 ? LESSONS[lessonIndex] : null;
+  const labRoute = LAB_ROUTES.find((l) => l.id === route);
+  const crumb = lesson ? lesson.nav : labRoute ? labRoute.nav : "";
 
   return (
     <div className="app">
-      <nav className="sidebar">
+      <nav className={`sidebar${menuOpen ? " open" : ""}`} id="sidebar" aria-label="課程導覽">
         <div className="brand">
-          <span className="brand-mark" style={{ color: "#fff" }}>
-            <Icon name="shield" size={20} />
-          </span>
+          <span className="brand-mark" aria-hidden="true">GW</span>
           <span className="brand-title">Guardrail Workshop</span>
         </div>
         <p className="brand-sub">AI/ML Engineer 學習系列</p>
@@ -160,12 +175,42 @@ export default function App() {
         ))}
       </nav>
 
-      <main className="content">
-        <ModeSwitch mode={mode} setMode={setMode} apiUrl={apiUrl} setApiUrl={setApiUrl} health={health} />
+      <button
+        type="button"
+        className={`menu-scrim${menuOpen ? " open" : ""}`}
+        aria-label="關閉選單"
+        tabIndex={-1}
+        onClick={() => setMenuOpen(false)}
+      />
 
+      <div className="main-area">
+      <header className="topbar">
+        <button
+          type="button"
+          className="menu-button"
+          aria-label="開啟選單"
+          aria-expanded={menuOpen}
+          aria-controls="sidebar"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          ☰
+        </button>
+        <div className="breadcrumb">
+          <span>GUARDRAIL</span>
+          <i>/</i>
+          <b>{crumb}</b>
+        </div>
+        <ModeSwitch mode={mode} setMode={setMode} apiUrl={apiUrl} setApiUrl={setApiUrl} health={health} />
+      </header>
+
+      <main className="content">
         {lesson ? (
           <>
-            <PageHeader title={lesson.title} subtitle={lesson.subtitle} />
+            <PageHeader
+              kicker={`GUARDRAIL / ${String(lessonIndex + 1).padStart(2, "0")}`}
+              title={lesson.title}
+              subtitle={lesson.subtitle}
+            />
             {lesson.render()}
             <div className="pager">
               {lessonIndex > 0 ? (
@@ -191,6 +236,7 @@ export default function App() {
         {route === "playground" ? <Playground client={client} /> : null}
         {route === "dashboard" ? <Dashboard client={client} /> : null}
       </main>
+      </div>
     </div>
   );
 }
