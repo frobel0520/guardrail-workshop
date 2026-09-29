@@ -77,6 +77,7 @@ export function Playground({ client }: { client: Client }) {
   return (
     <>
       <PageHeader
+        kicker="GUARDRAIL / LAB · PLAYGROUND"
         title="Guardrail Playground"
         subtitle="執行 Guardrail，檢視模型原始輸出、判定依據，以及真正提供給使用者的最終內容。"
       />

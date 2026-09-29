@@ -131,9 +131,10 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
 
 /* ---------------- 排版元件 ---------------- */
 
-export function PageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+export function PageHeader({ title, subtitle, kicker }: { title: string; subtitle?: string; kicker?: string }) {
   return (
     <header>
+      {kicker ? <p className="kicker">{kicker}</p> : null}
       <h2 className="page-title">{title}</h2>
       {subtitle ? <p className="page-sub">{subtitle}</p> : null}
     </header>
