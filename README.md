@@ -1,7 +1,10 @@
 # Guardrail Workshop
 
 > **Guardrail Fundamentals — LLM 應用的安全防護層：風險、架構與框架選型**
-> AI/ML Engineer 學習系列
+
+## 概覽
+
+> 互動式學習系列
 
 把投影片變成一個**可以動手玩、也可以 clone 下來改**的教材站：11 頁課程內容、一個即時互動的
 guardrail 實驗場，加上一個真的會跑的 FastAPI 縱深防禦服務。
@@ -9,6 +12,20 @@ guardrail 實驗場，加上一個真的會跑的 FastAPI 縱深防禦服務。
 🔗 **線上版：** https://frobel0520.github.io/guardrail-workshop/
 
 本站是 [Learning Atlas](https://frobel0520.github.io/learning-atlas/)「AI 安全」路線，站內導覽有返回 Learning Atlas 的連結（2026-09-25 起）。
+
+---
+
+## 主要功能／內容
+
+互動式 LLM guardrail 教材站，包含 11 頁課程、即時實驗場與 FastAPI 縱深防禦服務。
+
+## 現況與已知限制
+
+原 README 連結線上教材站，並記錄課程與實驗場內容；本次文件整理未重新驗證線上服務。
+
+## 授權與來源
+
+MIT — 見 [LICENSE](LICENSE)。教材內容改寫自 `guardrail-workshop-proposal.pdf`。
 
 ---
 
@@ -119,7 +136,7 @@ cd frontend && npm install && npm run dev
 ## 動手練習
 
 1. **加一條你自己的 PII pattern。** `shared/guard-rules.json` 的 `pii_detection` 目前抓得到電話、Email、
-   身分證，但抓不到中文姓名——這是刻意留的破口。試著補上你們公司的員工編號格式，看前後端是不是同時生效。
+   身分證，但抓不到中文姓名——這是刻意留的破口。試著補上一種自訂識別碼格式，看前後端是不是同時生效。
 2. **把 `pii_detection` 的 `on_fail` 從 `fix` 改成 `exception`**，跑一次 `/api/chat`，
    感受一下「遮罩後放行」與「整段攔下」對使用者體驗的差別。
 3. **在實驗場關掉 `prompt_injection`**，貼一段 injection，看它一路穿到 LLM 之後會發生什麼。
@@ -143,7 +160,3 @@ cd frontend && npm run build
 ## 維運
 
 `frontend/index.html` 載入 Harbor 維護腳本（`data-project="guardrail-workshop"`，2026-09-15 起）：Harbor 開啟維護模式時顯示全螢幕維護畫面，有公告時顯示底部公告列；Harbor 連不上或逾時 800 ms 時頁面照常顯示。
-
-## 授權
-
-MIT — 見 [LICENSE](LICENSE)。教材內容改寫自 `guardrail-workshop-proposal.pdf`。
