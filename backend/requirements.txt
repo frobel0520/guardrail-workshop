@@ -1,3 +1,4 @@
+-c constraints-security.txt
 # Guardrail Workshop — 核心後端相依（刻意保持輕量，30 秒內裝完）
 fastapi>=0.115
 uvicorn[standard]>=0.30

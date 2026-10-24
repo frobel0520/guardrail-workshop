@@ -1,0 +1,48 @@
+{
+  "taskId": "SEC-P2-20261025",
+  "date": "2026-10-25",
+  "name": "guardrail-workshop",
+  "baseCommit": "3cee8c6e40845ad33ff567a6a1e9c6ddc902f6df",
+  "baseBranch": "main",
+  "branch": "feature/sec-p2-20261025",
+  "state": "隔離修補已備妥，待整合",
+  "change": "Vite7.3.7及受影響傳遞依賴修補；Python33個解析版本加約束；CI權限明確read及固定Action SHA。",
+  "checks": [
+    "既有24個Python guard／API fixture測試",
+    "前端型別及build",
+    "npm及Python解析依賴公告0；付費模型與真實輸出品質未評分"
+  ],
+  "counts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "python": {
+    "resolvedPackages": 33,
+    "uniqueFindings": []
+  },
+  "securityGate": "passed_within_checked_scope",
+  "performance": {
+    "beforeGzipBytes": 85196,
+    "afterGzipBytes": 85196,
+    "growth": 0,
+    "thresholdGrowth": 0.05,
+    "result": "pass",
+    "scope": "Local gzip bundle size, not production latency"
+  },
+  "validation": "Vite7.3.7及受影響傳遞依賴修補；Python33個解析版本加約束；CI權限明確read及固定Action SHA。 既有24個Python guard／API fixture測試；前端型別及build；npm及Python解析依賴公告0；付費模型與真實輸出品質未評分",
+  "integrationNeeded": true,
+  "pushed": false,
+  "deployed": false,
+  "merged": false,
+  "noreplyIdentityVerified": true,
+  "actionPins": 9,
+  "monthlyCost": "Local checks only. No paid APIs, cloud data writes, new recurring services, remote CI, merge or deployment.",
+  "limitations": [
+    "原始工作目錄、未提交修改與分支全部保留；本報告僅適用此隔離分支。",
+    "完整history／秘密輪替／正式服務與二進位鑑識不在此輪驗收，未評項目not_scored。"
+  ]
+}
